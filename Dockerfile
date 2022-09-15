@@ -31,11 +31,10 @@ WORKDIR /sui
 FROM base AS sui
 
 COPY --from=builder \
+    /usr/src/sui/target/release/sui-node \
     /usr/src/sui/target/release/sui \
     /usr/src/sui/target/release/rpc-server \
     /usr/local/bin/
-
-ENTRYPOINT ["sui"]
 
 
 FROM base AS sui-node
