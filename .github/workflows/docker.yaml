@@ -35,5 +35,6 @@ jobs:
         if: inputs.sui_release
         run: echo "SUI_RELEASE=${{ inputs.sui_release }}" >> $GITHUB_ENV
 
+      # I wish this had just worked ...
       - name: Build and push images
         run: docker buildx bake ${{ (!inputs || inputs.push) && '--push' || '' }} sui-node sui

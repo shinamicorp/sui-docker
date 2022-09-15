@@ -3,6 +3,10 @@ variable "SUI_RELEASE" {
 }
 
 target "sui-node" {
+  # In theory this should make it a single command to bake both platforms
+  # ... except it doesn't work for this image. Cross compilation keeps hitting memory limit.
+  # In practice, we ended up building these individually on their corresponding host, and crafting
+  # multi-platform manifests by hand.
   platforms = ["linux/amd64", "linux/arm64"] 
   tags = ["ghcr.io/shinamicorp/sui-node:${SUI_RELEASE}"]
   output = ["type=image"]

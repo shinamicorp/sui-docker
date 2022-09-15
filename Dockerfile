@@ -13,9 +13,14 @@ RUN curl -sL https://github.com/MystenLabs/sui/archive/refs/tags/${SUI_RELEASE}.
 ENV GIT_REVISION=${SUI_RELEASE}
 RUN cargo build --locked --release --package sui-node
 RUN cargo build --locked --release --package sui
+RUN cargo build --locked --release --package sui-gateway
 
 
 FROM debian:bullseye-slim AS base
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN adduser --home /sui --gecos '' --disabled-password sui
 
@@ -27,6 +32,7 @@ FROM base AS sui
 
 COPY --from=builder \
     /usr/src/sui/target/release/sui \
+    /usr/src/sui/target/release/rpc-server \
     /usr/local/bin/
 
 ENTRYPOINT ["sui"]
