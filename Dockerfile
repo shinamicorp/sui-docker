@@ -19,7 +19,7 @@ RUN cargo build --locked --release --package sui-gateway
 FROM debian:bullseye-slim AS base
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends curl && \
+    apt-get install -y --no-install-recommends curl ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
 RUN adduser --home /sui --gecos '' --disabled-password sui
