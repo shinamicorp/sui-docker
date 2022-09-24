@@ -5,24 +5,40 @@ on:
   #  branches:
   #    - main
 
+  pull_request:
+    branches:
+      - main
+
   workflow_dispatch:
     inputs:
       sui_release:
         description: The Sui release tag to build. Leave empty to use default.
         type: string
+        required: false
       push:
         description: Whether to push the built images.
         type: boolean
+        required: true
         default: false
 
 jobs:
-  docker:
-    runs-on: ubuntu-latest
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-latest
+            platform: linux/amd64
+          - runner: [self-hosted, ARM64]
+            platform: linux/arm64
+
+    runs-on: ${{ matrix.runner }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
       - name: Set up QEMU
+        if: "false" # disabled since we no longer do cross-compilation
         uses: docker/setup-qemu-action@v2.0.0
 
       - name: Set up Docker Buildx
@@ -35,6 +51,10 @@ jobs:
         if: inputs.sui_release
         run: echo "SUI_RELEASE=${{ inputs.sui_release }}" >> $GITHUB_ENV
 
-      # I wish this had just worked ...
       - name: Build and push images
-        run: docker buildx bake ${{ (!inputs || inputs.push) && '--push' || '' }} sui-node sui
+        run: |-
+          docker buildx bake \
+            ${{ (!inputs || inputs.push) && '--push' || '--load' }} \
+            test
+        env:
+          PLATFORM: ${{ matrix.platform }}

@@ -2,13 +2,20 @@ variable "SUI_RELEASE" {
   default = "devnet-0.9.0"
 }
 
+variable "PLATFORM" {
+  default = "linux/amd64"
+}
+
+function "tag" {
+  params = [target]
+  result = ["ghcr.io/shinamicorp/${target}:${SUI_RELEASE}-${regex_replace(PLATFORM, "/", "-")}"]
+}
+
 target "sui-node" {
-  # In theory this should make it a single command to bake both platforms
-  # ... except it doesn't work for this image. Cross compilation keeps hitting memory limit.
-  # In practice, we ended up building these individually on their corresponding host, and crafting
-  # multi-platform manifests by hand.
-  platforms = ["linux/amd64", "linux/arm64"] 
-  tags = ["ghcr.io/shinamicorp/sui-node:${SUI_RELEASE}"]
+  # We gave up on cross-compilation of Sui because it kept hitting memory limit.
+  # So we'll build one platform image at a time and rely on manual manifest creation afterwards.
+  platforms = [PLATFORM] 
+  tags = tag("sui-node")
   output = ["type=image"]
   args = {
     SUI_RELEASE = SUI_RELEASE
@@ -18,7 +25,13 @@ target "sui-node" {
 target "sui" {
   inherits = ["sui-node"]
   target = "sui"
-  tags = ["ghcr.io/shinamicorp/sui:${SUI_RELEASE}"]
+  tags = tag("sui")
+}
+
+target "test" {
+  inherits = ["sui-node"]
+  dockerfile = "Dockerfile.test"
+  tags = tag("test")
 }
 
 target "default" {
