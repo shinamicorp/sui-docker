@@ -29,7 +29,7 @@ jobs:
         include:
           - runner: ubuntu-latest
             platform: linux/amd64
-          - runner: [self-hosted, ARM64]
+          - runner: ARM64
             platform: linux/arm64
 
     runs-on: ${{ matrix.runner }}
@@ -47,7 +47,9 @@ jobs:
         if: inputs.sui_release
         run: echo "SUI_RELEASE=${{ inputs.sui_release }}" >> $GITHUB_ENV
 
-      - run: echo "${{ inputs }}"
+      - run: |-
+          echo "${{ inputs }}"
+          echo "${{ inputs.push }}"
 
       - name: Build and push images
         run: |-
