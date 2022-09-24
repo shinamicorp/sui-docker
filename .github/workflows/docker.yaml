@@ -54,7 +54,7 @@ jobs:
       - name: Build and push images
         run: |-
           docker buildx bake \
-            ${{ (!inputs || inputs.push) && '--push' || '--load' }} \
+            ${{ (github.event_name != 'workflow_dispatch' || inputs.push) && '--push' || '--load' }} \
             test
         env:
           PLATFORM: ${{ matrix.platform }}
