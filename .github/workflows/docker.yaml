@@ -1,43 +1,33 @@
 name: Docker
 
 on:
-  #push:
-  #  branches:
-  #    - main
+  push:
+    branches:
+      - main
 
   pull_request:
     branches:
       - main
 
-  workflow_dispatch:
-    inputs:
-      sui_release:
-        description: The Sui release tag to build. Leave empty to use default.
-        type: string
-        required: false
-      push:
-        description: Whether to push the built images.
-        type: boolean
-        required: true
-        default: false
+env:
+  SUI_RELEASE: devnet-0.9.0
 
 jobs:
-  build:
+  build_push:
     strategy:
       fail-fast: false
       matrix:
         include:
           - runner: ubuntu-latest
-            platform: linux/amd64
+            image_os: linux
+            image_arch: amd64
           - runner: ARM64
-            platform: linux/arm64
+            image_os: linux
+            image_arch: arm64
 
     runs-on: ${{ matrix.runner }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Log in to the Container registry
+      - name: Log into the Container registry
         uses: docker/login-action@v2.0.0
         with:
           registry: ghcr.io
@@ -47,21 +37,57 @@ jobs:
       - name: Set up Docker Buildx
         if: matrix.runner == 'ubuntu-latest'
         uses: docker/setup-buildx-action@v2.0.0
+
+      - name: Build and push test
+        uses: docker/build-push-action@v3.1.1
         with:
-          config: .github/buildkitd.toml
+          file: Dockerfile.test
+          tags: ghcr.io/shinamicorp/test:${{ env.SUI_RELEASE }}-${{ matrix.image_os }}-${{ matrix.image_arch }}
+          build-args: SUI_RELEASE=${{ env.SUI_RELEASE }}
+          platforms: ${{ matrix.image_os }}/${{ matrix.image_arch }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          push: ${{ github.event_name == 'push' }}
 
-      - name: Set SUI_RELEASE env
-        if: inputs.sui_release
-        run: echo "SUI_RELEASE=${{ inputs.sui_release }}" >> $GITHUB_ENV
+      - name: Build and push sui-node
+        if: false
+        uses: docker/build-push-action@v3.1.1
+        with:
+          target: sui-node
+          tags: ghcr.io/shinamicorp/sui-node:${{ env.SUI_RELEASE }}-${{ matrix.image_os }}-${{ matrix.image_arch }}
+          build-args: SUI_RELEASE=${{ env.SUI_RELEASE }}
+          platforms: ${{ matrix.image_os }}/${{ matrix.image_arch }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          push: ${{ github.event_name == 'push' }}
 
-      - run: |-
-          echo "${{ inputs }}"
-          echo "${{ inputs.push }}"
+      - name: Build and push sui
+        if: false
+        uses: docker/build-push-action@v3.1.1
+        with:
+          target: sui
+          tags: ghcr.io/shinamicorp/sui:${{ env.SUI_RELEASE }}-${{ matrix.image_os }}-${{ matrix.image_arch }}
+          build-args: SUI_RELEASE=${{ env.SUI_RELEASE }}
+          platforms: ${{ matrix.image_os }}/${{ matrix.image_arch }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          push: ${{ github.event_name == 'push' }}
 
-      - name: Build and push images
-        run: |-
-          docker buildx bake \
-            ${{ (github.event_name != 'workflow_dispatch' || inputs.push) && '--push' || '--load' }} \
-            test
-        env:
-          PLATFORM: ${{ matrix.platform }}
+  # manifest:
+  #   needs: build_push
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Log in to the Container registry
+  #       uses: docker/login-action@v2.0.0
+  #       with:
+  #         registry: ghcr.io
+  #         username: ${{ github.actor }}
+  #         password: ${{ secrets.GITHUB_TOKEN }}
+
+  #     - name: Pull images
+  #       run: |
+  #         docker pull ghcr.io/shinamicorp/test:
+
+  #     - name: a
+  #       run: |-
+  #         docker manifest
