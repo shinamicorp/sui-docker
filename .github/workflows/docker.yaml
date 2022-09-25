@@ -47,8 +47,9 @@ jobs:
           platforms: ${{ matrix.image_os }}/${{ matrix.image_arch }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          push: ${{ github.event_name == 'push' }}
-          load: ${{ github.event_name != 'push' }}
+          push: true
+          #push: ${{ github.event_name == 'push' }}
+          #load: ${{ github.event_name != 'push' }}
 
       - name: Build and push sui-node
         if: false
@@ -60,8 +61,9 @@ jobs:
           platforms: ${{ matrix.image_os }}/${{ matrix.image_arch }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          push: ${{ github.event_name == 'push' }}
-          load: ${{ github.event_name != 'push' }}
+          push: true
+          #push: ${{ github.event_name == 'push' }}
+          #load: ${{ github.event_name != 'push' }}
 
       - name: Build and push sui
         if: false
@@ -73,12 +75,13 @@ jobs:
           platforms: ${{ matrix.image_os }}/${{ matrix.image_arch }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          push: ${{ github.event_name == 'push' }}
-          load: ${{ github.event_name != 'push' }}
+          push: true
+          #push: ${{ github.event_name == 'push' }}
+          #load: ${{ github.event_name != 'push' }}
 
   manifest:
     needs: build_push
-    if: github.event_name == 'push'
+    #if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - name: Log in to the Container registry
