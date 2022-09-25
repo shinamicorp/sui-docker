@@ -1,40 +1,83 @@
 name: Docker
 
 on:
-  #push:
-  #  branches:
-  #    - main
+  push:
+    branches:
+      - main
 
-  workflow_dispatch:
-    inputs:
-      sui_release:
-        description: The Sui release tag to build. Leave empty to use default.
-        type: string
-      push:
-        description: Whether to push the built images.
-        type: boolean
-        default: false
+  pull_request:
+    branches:
+      - main
+
+env:
+  SUI_RELEASE: devnet-0.9.0
+
+concurrency: docker
 
 jobs:
-  docker:
-    runs-on: ubuntu-latest
+  build_push:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-latest
+            platform: linux/amd64
+          - runner: ARM64
+            platform: linux/arm64
+
+    runs-on: ${{ matrix.runner }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2.0.0
+      - name: Log into the Container registry
+        uses: docker/login-action@v2.0.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Docker Buildx
-        id: buildx
+        if: matrix.runner == 'ubuntu-latest'
         uses: docker/setup-buildx-action@v2.0.0
+
+      - name: Bake sui-node
+        uses: docker/bake-action@v2.2.0
         with:
-          config: .github/buildkitd.toml
+          targets: sui-node
+          push: ${{ github.event_name == 'push' }}
+          load: ${{ github.event_name != 'push' }}
+        env:
+          PLATFORM: ${{ matrix.platform }}
 
-      - name: Set SUI_RELEASE env
-        if: inputs.sui_release
-        run: echo "SUI_RELEASE=${{ inputs.sui_release }}" >> $GITHUB_ENV
+      - name: Bake sui
+        uses: docker/bake-action@v2.2.0
+        with:
+          targets: sui
+          push: ${{ github.event_name == 'push' }}
+          load: ${{ github.event_name != 'push' }}
+        env:
+          PLATFORM: ${{ matrix.platform }}
 
-      # I wish this had just worked ...
-      - name: Build and push images
-        run: docker buildx bake ${{ (!inputs || inputs.push) && '--push' || '' }} sui-node sui
+  manifest:
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [sui-node, sui]
+
+    needs: build_push
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log into the Container registry
+        uses: docker/login-action@v2.0.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create manifest
+        run: |
+          docker buildx imagetools create -t ghcr.io/shinamicorp/${{ matrix.target }}:${{ env.SUI_RELEASE }} \
+            ghcr.io/shinamicorp/${{ matrix.target }}:${{ env.SUI_RELEASE }}-linux-amd64 \
+            ghcr.io/shinamicorp/${{ matrix.target }}:${{ env.SUI_RELEASE }}-linux-arm64 \

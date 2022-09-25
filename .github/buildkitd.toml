@@ -1,3 +1,0 @@
-# Control builder parallelism to avoid going out of memory.
-[worker.oci]
-max-parallelism = 1
