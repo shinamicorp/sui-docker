@@ -29,3 +29,5 @@ Please refer to the [GitHub Packages](https://github.com/orgs/shinamicorp/packag
   - `ghcr.io/shinamicorp/sui:<sui_release_version>`
   - Contains `sui-node`, `sui`, and `rpc-server`, so a little larger in size.
   - No entrypoint set.
+
+test pr
