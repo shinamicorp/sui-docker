@@ -10,7 +10,7 @@ on:
       - main
 
 env:
-  SUI_RELEASE: devnet-0.10.0
+  SUI_RELEASE: devnet-0.11.0
 
 concurrency: docker
 
