@@ -24,11 +24,12 @@ RUN apt-get update && \
 
 RUN adduser --home /sui --gecos '' --disabled-password sui
 
-USER sui
-WORKDIR /sui
-
 
 FROM base AS sui
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends git && \
+    rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder \
     /usr/src/sui/target/release/sui-node \
@@ -36,12 +37,18 @@ COPY --from=builder \
     /usr/src/sui/target/release/rpc-server \
     /usr/local/bin/
 
+USER sui
+WORKDIR /sui
+
 
 FROM base AS sui-node
 
 COPY --from=builder \
     /usr/src/sui/target/release/sui-node \
     /usr/local/bin/
+
+USER sui
+WORKDIR /sui
 
 EXPOSE 9000
 EXPOSE 9184
