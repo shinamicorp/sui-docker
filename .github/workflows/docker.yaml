@@ -51,7 +51,7 @@ jobs:
           PLATFORM: ${{ matrix.platform }}
 
       - name: Buildx prune
-        run: docker buildx prune -f
+        run: docker buildx prune -f && df -h
 
       - name: Bake sui
         uses: docker/bake-action@v2.3.0
