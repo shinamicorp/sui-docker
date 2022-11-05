@@ -20,7 +20,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - runner: ubuntu-latest
+          - runner: X64
             platform: linux/amd64
           - runner: ARM64
             platform: linux/arm64
@@ -49,9 +49,6 @@ jobs:
           load: ${{ github.event_name != 'push' }}
         env:
           PLATFORM: ${{ matrix.platform }}
-
-      - name: Buildx prune
-        run: docker buildx prune -f && df -h
 
       - name: Bake sui
         uses: docker/bake-action@v2.3.0
