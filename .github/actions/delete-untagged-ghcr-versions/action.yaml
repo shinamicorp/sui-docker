@@ -1,0 +1,84 @@
+name: Delete untagged GHCR versions
+description: Delete untagged versions of a GHCR package associated with the current repository
+
+inputs:
+  package_name:
+    description: GHCR package name
+    required: true
+  lookback_days:
+    description: Max number of days to look back for untagged versions
+    required: false
+    default: "90"
+  dry_run:
+    description: If non-empty, will skip the actual deletion of versions
+    required: false
+
+outputs:
+  untagged_versions_count:
+    description: Number of discovered untagged versions
+    value: ${{ steps.delete.outputs.result }}
+
+runs:
+  using: composite
+  steps:
+    - id: delete
+      uses: actions/github-script@v6
+      with:
+        env:
+          REPO_OWNER: ${{ github.repository_owner }}
+          PACKAGE_NAME: ${{ inputs.package_name }}
+          LOOKBACK_DAYS: ${{ inputs.lookback_days }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        script: |
+          const ownerType = (
+            await github.rest.users.getByUsername({
+              username: process.env.REPO_OWNER,
+            })
+          ).data.type;
+
+          const getVersions =
+            ownerType === "Organization"
+              ? github.rest.packages.getAllPackageVersionsForPackageOwnedByOrg
+              : github.rest.packages.getAllPackageVersionsForPackageOwnedByUser;
+
+          const deleteVersion =
+            ownerType === "Organization"
+              ? github.rest.packages.deletePackageVersionForOrg
+              : github.rest.packages.deletePackageVersionForUser;
+
+          const packageParams = {
+            username: process.env.REPO_OWNER,
+            org: process.env.REPO_OWNER,
+            package_type: "container",
+            package_name: process.env.PACKAGE_NAME,
+          };
+          const cutoffDate = Date.now() - parseInt(process.env.LOOKBACK_DAYS) * 24 * 60 * 60 * 1000;
+          const dryRun = !!process.env.DRY_RUN;
+
+          const versions = github.paginate.iterator(getVersions, packageParams);
+
+          let count = 0; 
+
+          for await (const page of versions) {
+            for (const version of page.data) {
+              if (new Date(version.created_at) < cutoffDate) {
+                break;
+              }
+              if (version.metadata.container.tags.length === 0) {
+                count++;
+                github.log.warn(`Deleting untagged version ${version.name})`);
+                if (!dryRun) {
+                  await deleteVersion({
+                    ...packageParams,
+                    package_version_id: version.id,
+                  });
+                }
+              } else {
+                github.log.info(
+                  `Version ${version.name} is tagged with ${version.metadata.container.tags}`
+                );
+              }
+            }
+          }
+
+          return count;
