@@ -23,12 +23,12 @@ runs:
   steps:
     - id: delete
       uses: actions/github-script@v6
+      env:
+        REPO_OWNER: ${{ github.repository_owner }}
+        PACKAGE_NAME: ${{ inputs.package_name }}
+        LOOKBACK_DAYS: ${{ inputs.lookback_days }}
+        DRY_RUN: ${{ inputs.dry_run }}
       with:
-        env:
-          REPO_OWNER: ${{ github.repository_owner }}
-          PACKAGE_NAME: ${{ inputs.package_name }}
-          LOOKBACK_DAYS: ${{ inputs.lookback_days }}
-          DRY_RUN: ${{ inputs.dry_run }}
         script: |
           const ownerType = (
             await github.rest.users.getByUsername({
