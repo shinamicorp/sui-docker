@@ -12,9 +12,7 @@ jobs:
       - uses: ./.github/actions/delete-untagged-ghcr-versions
         with:
           package_name: sui-node
-          dry_run: "true"
 
       - uses: ./.github/actions/delete-untagged-ghcr-versions
         with:
           package_name: sui
-          dry_run: "true"
