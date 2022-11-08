@@ -48,10 +48,15 @@ runs:
               : github.rest.packages.deletePackageVersionForUser;
 
           const packageParams = {
-            username: process.env.REPO_OWNER,
-            org: process.env.REPO_OWNER,
             package_type: "container",
             package_name: process.env.PACKAGE_NAME,
+            ...(ownerType === "Organization"
+              ? {
+                  org: process.env.REPO_OWNER,
+                }
+              : {
+                  username: process.env.REPO_OWNER,
+                }),
           };
           const cutoffDate = Date.now() - parseInt(process.env.LOOKBACK_DAYS) * 24 * 60 * 60 * 1000;
           const dryRun = !!process.env.DRY_RUN;
