@@ -29,6 +29,7 @@ runs:
         LOOKBACK_DAYS: ${{ inputs.lookback_days }}
         DRY_RUN: ${{ inputs.dry_run }}
       with:
+        debug: "true"
         script: |
           const ownerType = (
             await github.rest.users.getByUsername({
