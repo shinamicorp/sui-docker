@@ -1,0 +1,20 @@
+name: Delete untagged versions
+
+on: workflow_dispatch
+
+jobs:
+  delete:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - uses: ./.github/actions/delete-untagged-ghcr-versions
+        with:
+          package_name: sui-node
+          dry_run: "true"
+
+      - uses: ./.github/actions/delete-untagged-ghcr-versions
+        with:
+          package_name: sui
+          dry_run: "true"
