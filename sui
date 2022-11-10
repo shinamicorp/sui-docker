@@ -1,0 +1,41 @@
+#!/usr/bin/env python3
+"""Helper script to run Sui CLI commands using the docker image.
+
+Notes:
+- All arguments are passed onto Sui CLI.
+- User's home dir is mounted in the docker container.
+- Current dir must be within user's home dir.
+- Remember to use relative paths in arguments, as absolute paths differ between host and container.
+"""
+
+import sys
+from pathlib import Path
+from subprocess import run
+
+SUI_IMAGE = "ghcr.io/shinamicorp/sui:devnet-0.15.0"
+
+
+def sui(*args: str) -> None:
+    home_dir = Path.home()
+    # This will fail if current dir is not inside home.
+    rel_path = Path.cwd().relative_to(home_dir)
+
+    run(
+        [
+            # fmt: off
+            "docker", "run",
+            "--rm", "-i",
+            *(["-t"] if sys.stdout.isatty() else []),
+            "-v", f"{home_dir}:/sui",
+            "-w", f"/sui/{rel_path}",
+            SUI_IMAGE,
+            "sui",
+            *args,
+            # fmt: on
+        ],
+        check=True,
+    )
+
+
+if __name__ == "__main__":
+    sui(*sys.argv[1:])
