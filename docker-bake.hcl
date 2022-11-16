@@ -1,15 +1,15 @@
-variable "SUI_RELEASE" {}
+variable "SUI_GIT_REVISION" {}
 
 variable "PLATFORM" {}
 
 function "tags" {
   params = [target]
-  result = ["ghcr.io/shinamicorp/${target}:${SUI_RELEASE}-${regex_replace(PLATFORM, "/", "-")}"]
+  result = ["ghcr.io/shinamicorp/${target}:${SUI_GIT_REVISION}-${regex_replace(PLATFORM, "/", "-")}"]
 }
 
 function "tags_multi_platform" {
   params = [target]
-  result = ["ghcr.io/shinamicorp/${target}:${SUI_RELEASE}"]
+  result = ["ghcr.io/shinamicorp/${target}:${SUI_GIT_REVISION}"]
 }
 
 function "cache" {
@@ -29,7 +29,7 @@ target "sui-node" {
   target = "sui-node"
   output = ["type=image"]
   args = {
-    SUI_RELEASE = SUI_RELEASE
+    SUI_GIT_REVISION = SUI_GIT_REVISION
   }
   tags = tags("sui-node")
   cache-from = [cache("sui-node")] # always merged with children's cache-from
@@ -54,7 +54,7 @@ target "sui-node-multi-platform" {
   target = "sui-node"
   output = ["type=image"]
   args = {
-    SUI_RELEASE = SUI_RELEASE
+    SUI_GIT_REVISION = SUI_GIT_REVISION
   }
   tags = tags_multi_platform("sui-node")
   cache-from = [cache_multi_platform("sui-node")] # always merged with children's cache-from

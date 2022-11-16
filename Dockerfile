@@ -4,13 +4,17 @@ RUN apt-get update && \
     apt-get install -y cmake libclang-dev && \
     rm -rf /var/lib/apt/lists/*
 
-ARG SUI_RELEASE
-
 WORKDIR /usr/src/sui
-RUN curl -sL https://github.com/MystenLabs/sui/archive/refs/tags/${SUI_RELEASE}.tar.gz | \
-    tar -xzv --strip-components 1
 
-ENV GIT_REVISION=${SUI_RELEASE}
+# ARG SUI_RELEASE
+# RUN curl -sL https://github.com/MystenLabs/sui/archive/refs/tags/${SUI_RELEASE}.tar.gz | \
+#     tar -xzv --strip-components 1
+# ENV GIT_REVISION=${SUI_RELEASE}
+
+ARG SUI_GIT_REVISION
+RUN git clone https://github.com/MystenLabs/sui.git . && \
+    git checkout ${SUI_GIT_REVISION}
+
 RUN cargo build --locked --release --package sui-node
 RUN cargo build --locked --release --package sui
 RUN cargo build --locked --release --package sui-gateway
