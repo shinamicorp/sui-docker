@@ -27,7 +27,7 @@ Please refer to the [GitHub Packages](https://github.com/orgs/shinamicorp/packag
   - In practice, you'll need to mount volumes for config, genesis, and data storage etc.
 - [sui](https://github.com/shinamicorp/sui-docker/pkgs/container/sui)
   - `ghcr.io/shinamicorp/sui:<sui_release_version>`
-  - Contains `sui-node`, `sui`, and `rpc-server`, so a little larger in size.
+  - Contains `sui-node` and `sui`, so a little larger in size.
   - No entrypoint set.
 
 ## Helper script
