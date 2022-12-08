@@ -17,7 +17,6 @@ RUN git clone https://github.com/MystenLabs/sui.git . && \
 
 RUN cargo build --locked --release --package sui-node
 RUN cargo build --locked --release --package sui
-RUN cargo build --locked --release --package sui-gateway
 
 
 FROM debian:bullseye-slim AS base
@@ -38,7 +37,6 @@ RUN apt-get update && \
 COPY --from=builder \
     /usr/src/sui/target/release/sui-node \
     /usr/src/sui/target/release/sui \
-    /usr/src/sui/target/release/rpc-server \
     /usr/local/bin/
 
 USER sui
