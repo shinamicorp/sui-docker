@@ -12,7 +12,7 @@ import sys
 from pathlib import Path
 from subprocess import run
 
-SUI_IMAGE = "ghcr.io/shinamicorp/sui:devnet-0.20.1"
+SUI_IMAGE = "ghcr.io/shinamicorp/sui:devnet-0.21.0"
 
 
 def sui(*args: str) -> None:
