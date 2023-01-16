@@ -10,7 +10,7 @@ on:
       - main
 
 env:
-  SUI_GIT_REVISION: 1cb2e5a # hotfix from branch releases/sui-v0.21.0-release
+  SUI_GIT_REVISION: devnet-0.21.2
 
 concurrency: docker
 
