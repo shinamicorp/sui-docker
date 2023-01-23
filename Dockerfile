@@ -15,8 +15,8 @@ ARG SUI_GIT_REVISION
 RUN git clone https://github.com/MystenLabs/sui.git . && \
     git checkout ${SUI_GIT_REVISION}
 
-RUN cargo build --locked --release --package sui-node
-RUN cargo build --locked --release --package sui
+RUN cargo build --release --package sui-node
+RUN cargo build --release --package sui
 
 
 FROM debian:bullseye-slim AS base
