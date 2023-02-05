@@ -10,7 +10,7 @@ on:
       - main
 
 env:
-  SUI_GIT_REVISION: 336ffb7 # Testnet Wave2
+  SUI_GIT_REVISION: 3258863 # Testnet Wave2
 
 concurrency: docker
 
