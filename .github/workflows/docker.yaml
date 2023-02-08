@@ -10,7 +10,7 @@ on:
       - main
 
 env:
-  SUI_GIT_REVISION: 92b4c06 # Testnet Wave2
+  SUI_GIT_REVISION: devnet-0.25.0
 
 concurrency: docker
 
