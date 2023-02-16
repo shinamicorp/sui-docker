@@ -10,7 +10,7 @@ on:
       - main
 
 env:
-  SUI_GIT_REVISION: c4781eb # sponsored-tx
+  SUI_GIT_REVISION: devnet-0.26.1
 
 concurrency: docker
 
