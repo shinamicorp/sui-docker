@@ -10,7 +10,7 @@ on:
       - main
 
 env:
-  SUI_GIT_REVISION: 6731531   # Testnet wave 3
+  SUI_GIT_REVISION: devnet-0.29.0
 
 concurrency: docker
 
