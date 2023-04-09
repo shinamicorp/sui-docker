@@ -10,7 +10,7 @@ on:
       - main
 
 env:
-  SUI_GIT_REVISION: devnet-0.30.0
+  SUI_GIT_REVISION: 44b6795   # updated commit hash for 0.30.0 release branch (for testnet deploy)
 
 concurrency: docker
 
