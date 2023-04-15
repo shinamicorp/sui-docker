@@ -26,7 +26,8 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 RUN adduser --home /sui --gecos '' --disabled-password sui
-
+# temporarily grant sudo access to sui for snapshot testing
+RUN usermod -aG sudo sui
 
 FROM base AS sui
 
