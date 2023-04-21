@@ -10,7 +10,7 @@ on:
       - main
 
 env:
-  SUI_GIT_REVISION: testnet-0.32.1
+  SUI_GIT_REVISION: f55d7ac     # patched testnet 0.32.1 version w/ sync optimizations
 
 concurrency: docker
 
