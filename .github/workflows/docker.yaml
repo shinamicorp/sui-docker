@@ -10,7 +10,7 @@ on:
       - main
 
 env:
-  SUI_GIT_REVISION: f55d7ac     # patched testnet 0.32.1 version w/ sync optimizations
+  SUI_GIT_REVISION: 6269f04     # patched testnet 0.32.1 version w/ fix for hanging nodes
 
 concurrency: docker
 
