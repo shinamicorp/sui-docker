@@ -10,7 +10,7 @@ on:
       - main
 
 env:
-  SUI_GIT_REVISION: 177567d
+  SUI_GIT_REVISION: c525ba6
 
 concurrency: docker
 
