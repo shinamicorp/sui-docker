@@ -1,4 +1,4 @@
-FROM rust:1.65 AS builder
+FROM rust:1.68 AS builder
 
 RUN apt-get update && \
     apt-get install -y cmake libclang-dev && \
