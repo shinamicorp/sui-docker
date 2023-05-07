@@ -22,7 +22,7 @@ RUN cargo build --locked --release --package sui
 FROM debian:bullseye-slim AS base
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends curl ca-certificates procps vim sudo awscli && \
+    apt-get install -y --no-install-recommends curl ca-certificates procps vim sudo awscli jq && \
     rm -rf /var/lib/apt/lists/*
 
 RUN adduser --home /sui --gecos '' --disabled-password sui
