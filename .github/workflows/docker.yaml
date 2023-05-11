@@ -10,7 +10,7 @@ on:
       - main
 
 env:
-  SUI_GIT_REVISION: devnet-v1.1.0
+  SUI_GIT_REVISION: e4fe9f5   # patched testnet version for wipe
 
 concurrency: docker
 
