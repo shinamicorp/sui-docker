@@ -25,7 +25,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates procps && \
     rm -rf /var/lib/apt/lists/*
 
-RUN adduser --home /sui --gecos '' --disabled-password sui
+RUN adduser --uid 1000 --home /sui --gecos '' --disabled-password sui
 
 
 FROM base AS sui
