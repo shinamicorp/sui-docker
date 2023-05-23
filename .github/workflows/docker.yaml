@@ -10,7 +10,7 @@ on:
       - main
 
 env:
-  SUI_GIT_REVISION: mainnet-v1.1.0
+  SUI_GIT_REVISION: 7ef210c
 
 concurrency: docker
 
