@@ -10,7 +10,7 @@ on:
       - main
 
 env:
-  SUI_GIT_REVISION: 434eb19 # testnet-v1.3.0 patch
+  SUI_GIT_REVISION: mainnet-v1.3.0
 
 concurrency: docker
 
