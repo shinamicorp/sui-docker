@@ -8,6 +8,7 @@ Notes:
 - Remember to use relative paths in arguments, as absolute paths differ between host and container.
 """
 
+import os
 import sys
 from pathlib import Path
 from subprocess import run
@@ -28,6 +29,7 @@ def sui(*args: str) -> None:
             *(["-t"] if sys.stdout.isatty() else []),
             "-v", f"{home_dir}:/sui",
             "-w", f"/sui/{rel_path}",
+            "-e", "RUST_LOG",
             SUI_IMAGE,
             "sui",
             *args,
@@ -38,4 +40,6 @@ def sui(*args: str) -> None:
 
 
 if __name__ == "__main__":
+    if "RUST_LOG" not in os.environ:
+        os.environ["RUST_LOG"] = "warn"
     sui(*sys.argv[1:])
