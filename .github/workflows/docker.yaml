@@ -22,8 +22,8 @@ jobs:
         include:
           - runner: X64
             platform: linux/amd64
-          - runner: ARM64
-            platform: linux/arm64
+#          - runner: ARM64
+#            platform: linux/arm64
 
     runs-on: ${{ matrix.runner }}
     steps:
@@ -45,8 +45,8 @@ jobs:
         uses: docker/bake-action@v2.3.0
         with:
           targets: sui-node
-          push: ${{ github.event_name == 'push' }}
-          load: ${{ github.event_name != 'push' }}
+          push: ${{ github.event_name != 'push' }}
+          load: ${{ github.event_name == 'push' }}
         env:
           PLATFORM: ${{ matrix.platform }}
 
@@ -63,10 +63,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [sui-node, sui]
+        target: [sui-node]
 
     needs: build_push
-    if: github.event_name == 'push'
+#    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - name: Log into the Container registry
@@ -78,6 +78,5 @@ jobs:
 
       - name: Create manifest
         run: |
-          docker buildx imagetools create -t ghcr.io/shinamicorp/${{ matrix.target }}:${{ env.SUI_GIT_REVISION }} \
-            ghcr.io/shinamicorp/${{ matrix.target }}:${{ env.SUI_GIT_REVISION }}-linux-amd64 \
-            ghcr.io/shinamicorp/${{ matrix.target }}:${{ env.SUI_GIT_REVISION }}-linux-arm64 \
+          docker buildx imagetools create -t ghcr.io/shinamicorp/${{ matrix.target }}:${{ env.SUI_GIT_REVISION }}-debug-1 \
+            ghcr.io/shinamicorp/${{ matrix.target }}:${{ env.SUI_GIT_REVISION }}-debug-linux-amd64 \

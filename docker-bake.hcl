@@ -4,12 +4,12 @@ variable "PLATFORM" {}
 
 function "tags" {
   params = [target]
-  result = ["ghcr.io/shinamicorp/${target}:${SUI_GIT_REVISION}-${regex_replace(PLATFORM, "/", "-")}"]
+  result = ["ghcr.io/shinamicorp/${target}:${SUI_GIT_REVISION}-debug-${regex_replace(PLATFORM, "/", "-")}"]
 }
 
 function "tags_multi_platform" {
   params = [target]
-  result = ["ghcr.io/shinamicorp/${target}:${SUI_GIT_REVISION}"]
+  result = ["ghcr.io/shinamicorp/${target}:${SUI_GIT_REVISION}-debug-1"]
 }
 
 function "cache" {

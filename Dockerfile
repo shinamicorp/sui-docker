@@ -15,8 +15,8 @@ ARG SUI_GIT_REVISION
 RUN git clone https://github.com/MystenLabs/sui.git . && \
     git checkout ${SUI_GIT_REVISION}
 
-RUN cargo build --locked --release --bin sui-node
-RUN cargo build --locked --release --bin sui
+RUN cargo build --locked --bin sui-node
+# RUN cargo build --locked --bin sui
 
 
 FROM debian:bullseye-slim AS base
@@ -35,8 +35,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder \
-    /usr/src/sui/target/release/sui-node \
-    /usr/src/sui/target/release/sui \
+    /usr/src/sui/target/debug/sui-node \
     /usr/local/bin/
 
 USER sui
@@ -45,8 +44,11 @@ WORKDIR /sui
 
 FROM base AS sui-node
 
+RUN apt-get update && \
+    apt-get install -y heaptrack
+
 COPY --from=builder \
-    /usr/src/sui/target/release/sui-node \
+    /usr/src/sui/target/debug/sui-node \
     /usr/local/bin/
 
 USER sui
@@ -55,4 +57,5 @@ WORKDIR /sui
 EXPOSE 9000
 EXPOSE 9184
 
-ENTRYPOINT ["sui-node"]
+# ENTRYPOINT ["sui-node"]
+ENTRYPOINT ["heaptrack"]
