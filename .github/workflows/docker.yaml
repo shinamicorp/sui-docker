@@ -10,7 +10,7 @@ on:
       - main
 
 env:
-  SUI_GIT_REVISION: testnet-v1.15.0
+  SUI_GIT_REVISION: 3aa9803 # devnet
 
 concurrency: docker
 
