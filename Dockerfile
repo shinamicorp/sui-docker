@@ -1,4 +1,4 @@
-FROM rust:1.75-bullseye AS builder
+FROM rust:1.80.1-bullseye AS builder
 
 RUN apt-get update && \
     apt-get install -y cmake libclang-dev && \
