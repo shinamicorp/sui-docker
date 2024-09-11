@@ -10,7 +10,7 @@ on:
       - main
 
 env:
-  SUI_GIT_REVISION: 3576d332b0e58756a5a02c3933c4eb465632ecfe # events patch for mainnet-v1.32.2
+  SUI_GIT_REVISION: testnet-v1.33.0
 
 concurrency: docker
 
