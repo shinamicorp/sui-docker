@@ -3,6 +3,7 @@ FROM rust:1.81.0-slim-bookworm AS builder-base
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
+        git \
         cmake \
         libclang-dev \
         && \
