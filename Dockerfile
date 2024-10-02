@@ -4,9 +4,8 @@ FROM rust:1.81.0-slim-bookworm AS builder-base
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         git \
-        cmake \
-        g++ \
-        libclang-dev \
+        make \
+        clang \
         && \
     rm -rf /var/lib/apt/lists/*
 
