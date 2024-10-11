@@ -10,7 +10,7 @@ on:
       - main
 
 env:
-  SUI_GIT_REVISION: testnet-v1.35.0
+  SUI_GIT_REVISION: ad41ab4   # testnet release with WS filter hotfix
 
 concurrency: docker
 
