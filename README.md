@@ -5,7 +5,7 @@
 Multi-platform docker images for [Sui](https://sui.io/).
 
 These are built from the official release source code from [Sui](https://github.com/MystenLabs/sui/releases).
-The images are tagged with the corresponding release version, e.g. `mainnet-v1.35.2`.
+The images are tagged with the corresponding release version, e.g. `mainnet-v1.35.4`.
 
 Please refer to the [GitHub Packages](https://github.com/orgs/shinamicorp/packages?repo_name=sui-docker) page for available versions.
 
