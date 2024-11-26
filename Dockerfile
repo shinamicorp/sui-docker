@@ -40,11 +40,14 @@ FROM debian:bookworm-slim AS runtime-base
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
+        ibjemalloc-dev \
         curl \
         ca-certificates \
         procps \
         && \
     rm -rf /var/lib/apt/lists/*
+
+ENV LD_PRELOAD /usr/lib/x86_64-linux-gnu/libjemalloc.so
 
 RUN adduser --uid 1000 --home /sui --gecos '' --disabled-password sui
 WORKDIR /sui
