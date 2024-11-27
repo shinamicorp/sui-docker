@@ -15,10 +15,10 @@ FROM builder-base AS builder
 WORKDIR /usr/src/sui
 
 # Shallow clone of a specific commit
-ARG SUI_GIT_REVISION
+ARG SUI_GIT_REF
 RUN git init && \
     git remote add origin https://github.com/MystenLabs/sui.git && \
-    git fetch --depth 1 origin ${SUI_GIT_REVISION} && \
+    git fetch --depth 1 origin ${SUI_GIT_REF} && \
     git checkout FETCH_HEAD
 
 RUN cargo build --locked --release --bin sui-node
