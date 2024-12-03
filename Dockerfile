@@ -42,15 +42,12 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         curl \
         ca-certificates \
-        dpkg-dev \
-        libjemalloc-dev \
+        libjemalloc2 \
         procps \
         && \
     rm -rf /var/lib/apt/lists/*
 
-RUN ln -s /usr/lib/$(dpkg-architecture -qDEB_HOST_MULTIARCH)/libjemalloc.so /usr/lib/libjemalloc.so
-
-ENV LD_PRELOAD=/usr/lib/libjemalloc.so
+ENV LD_PRELOAD=libjemalloc.so.2
 
 RUN adduser --uid 1000 --home /sui --gecos '' --disabled-password sui
 WORKDIR /sui
