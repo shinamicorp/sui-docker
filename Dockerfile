@@ -1,5 +1,5 @@
 # Keep up-to-date with https://github.com/MystenLabs/sui/blob/main/rust-toolchain.toml
-FROM rust:1.81.0-slim-bookworm AS builder-base
+FROM rust:1.85-slim-bookworm AS builder-base
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -42,12 +42,9 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         curl \
         ca-certificates \
-        libjemalloc2 \
         procps \
         && \
     rm -rf /var/lib/apt/lists/*
-
-ENV LD_PRELOAD=libjemalloc.so.2
 
 RUN adduser --uid 1000 --home /sui --gecos '' --disabled-password sui
 WORKDIR /sui
