@@ -22,7 +22,7 @@ Please refer to the [GitHub Packages](https://github.com/orgs/shinamicorp/packag
   - Contains a single `sui-node` binary, geared towards running Sui fullnodes.
   - Image entrypoint set to `sui-node`, so you can directly run commands like this:
     ```
-    docker run --rm -it ghcr.io/shinamicorp/sui-node:mainnet-v1.58.3 --help
+    docker run --rm -it ghcr.io/shinamicorp/sui-node:<sui_release_version> --help
     ```
   - In practice, you'll need to mount volumes for config, genesis, and data storage etc.
 - [sui](https://github.com/shinamicorp/sui-docker/pkgs/container/sui)
