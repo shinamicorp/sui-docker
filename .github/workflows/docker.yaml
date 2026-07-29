@@ -10,7 +10,7 @@ on:
       - main
 
 env:
-  SUI_GIT_REF: mainnet-v1.72.5
+  SUI_GIT_REF: mainnet-v1.76.1
 
 concurrency: docker
 
@@ -35,18 +35,16 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - runner: X64
+          - runner: ubuntu-24.04
             platform: linux/amd64
-          - runner: ARM64
+          - runner: ubuntu-24.04-arm
             platform: linux/arm64
 
     needs: prep
     env:
       SUI_GIT_REF: ${{ needs.prep.outputs.sui_git_sha }}
       PLATFORM: ${{ matrix.platform }}
-    runs-on:
-      - self-hosted
-      - ${{ matrix.runner }}
+    runs-on: ${{ matrix.runner }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
